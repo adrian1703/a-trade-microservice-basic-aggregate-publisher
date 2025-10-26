@@ -1,4 +1,4 @@
-package a.trade.microservice.template.test
+package a.trade.microservice.basic.aggregate.publisher.test
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.media.Schema

@@ -1,4 +1,4 @@
-package a.trade.microservice.template.test
+package a.trade.microservice.basic.aggregate.publisher.test
 
 import a.trade.microservice.runtime_api.test.TestInterface
 
