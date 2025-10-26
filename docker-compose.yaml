@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  template-microservice:
+    image: localhost/a-trade-microservice-base:latest
+    container_name: a-trade-microservice-template
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./build/libs/a-trade-microservice-template-0.0.1.jar:/app/plugins/plugin.jar
