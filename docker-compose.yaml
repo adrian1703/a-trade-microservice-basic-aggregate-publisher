@@ -8,3 +8,4 @@ services:
       - "8080:8080"
     volumes:
       - ./build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1.jar:/app/plugins/plugin.jar
+      - ./build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1.jar:/app/data/plugin.jar

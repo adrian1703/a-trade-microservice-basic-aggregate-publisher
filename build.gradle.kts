@@ -12,7 +12,9 @@ repositories {
 dependencies {
     implementation("adrian.kuhn:a-trade-microservice-runtime-api:0.0.1")
     implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
+    implementation("net.jcip:jcip-annotations:1.0")
     implementation("org.springframework:spring-webflux:6.1.14")
+    implementation("org.apache.avro:avro:1.12.0")
 
     // openapi stuff
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
@@ -23,6 +25,7 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
     // openapi stuff ende
+    implementation("com.opencsv:opencsv:5.9")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
@@ -41,7 +44,7 @@ tasks.test {
 }
 
 tasks.withType<Test> {
-    systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
+//    systemProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager")
     jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED")
 }
 
