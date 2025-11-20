@@ -7,6 +7,5 @@ services:
 #    ports:
 #      - "8080:8080"
     volumes:
-      - ./build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1.jar:/app/plugins/plugin.jar
-      - /home/adrian/trading/a-trade-mircoservice-base/a-trade-microservice-template/build/libs/a-trade-microservice-template-0.0.1.jar:/app/plugins/plugin2.jar
-      - ./data:/app/data
+      - ./build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1.jar:/app/plugins/plugin.jar:z
+      - ./data:/app/data:z

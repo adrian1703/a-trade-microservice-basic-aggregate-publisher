@@ -11,8 +11,9 @@ class RestApiPluginLoadingTest {
     fun `should discover RestApiPlugin implementation via ServiceLoader`() {
         val loader = ServiceLoader.load(RestApiPlugin::class.java)
         val implementations = loader.toList()
+        println(implementations.size)
         assertTrue(
-            implementations.any { it::class.java.name == "a.trade.microservice.basic.aggregate.publisher.RestApiPluginImplementation" },
+            implementations.any { it::class.java.name == "a.trade.microservice.basic.aggregate.publisher.RestApiPluginImpl" },
             "RestApiPluginImplementation must be discoverable via ServiceLoader"
         )
     }
@@ -32,7 +33,7 @@ class RestApiPluginLoadingTest {
             )
             val implementations = serviceLoader.toList()
             assertTrue(
-                implementations.any { it::class.java.name == "a.trade.microservice.basic.aggregate.publisher.RestApiPluginImplementation" },
+                implementations.any { it::class.java.name == "a.trade.microservice.basic.aggregate.publisher.RestApiPluginImpl" },
                 "RestApiPluginImplementation must be discoverable via ServiceLoader from JAR"
             )
         }
