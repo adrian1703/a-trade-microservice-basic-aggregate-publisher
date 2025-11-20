@@ -1,11 +1,12 @@
 version: '3.8'
 
 services:
-  template-microservice:
+  basic-aggregate-publisher:
     image: localhost/a-trade-microservice-base:latest
     container_name: a-trade-microservice-basic-aggregate-publisher
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
     volumes:
       - ./build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1.jar:/app/plugins/plugin.jar
-      - ./build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1.jar:/app/data/plugin.jar
+      - /home/adrian/trading/a-trade-mircoservice-base/a-trade-microservice-template/build/libs/a-trade-microservice-template-0.0.1.jar:/app/plugins/plugin2.jar
+      - ./data:/app/data

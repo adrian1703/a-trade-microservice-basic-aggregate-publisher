@@ -21,7 +21,7 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-//    implementation("javax.validation:validation-api")
+   // implementation("javax.validation:validation-api")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
     // openapi stuff ende

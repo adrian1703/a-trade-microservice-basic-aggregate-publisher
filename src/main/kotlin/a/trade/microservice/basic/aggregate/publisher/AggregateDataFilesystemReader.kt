@@ -16,7 +16,7 @@ import java.util.zip.GZIPInputStream
 class AggregateDataFilesystemReader(private val dataDirectory: String) {
 
     @GuardedBy("this")
-    var dataFiles: ConcurrentLinkedQueue<File> = fetchDirectoryFiles()
+    val dataFiles: ConcurrentLinkedQueue<File> = fetchDirectoryFiles()
 
 
     @Synchronized

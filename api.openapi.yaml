@@ -7,29 +7,15 @@ servers:
   - url: http://localhost:8080
   - url: http://localhost:7001
 paths:
-  /v1/test:
-    post:
-      summary: Test
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/TestComponent"
+  /ping:
+    get:
+      summary: pings
       responses:
         "200":
-          description: Testing
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TestComponent"
-components:
-  schemas:
-    TestComponent:
-      type: object
-      properties:
-        testprop1:
-          type: integer
-        testprop2:
-          type: string
-          description: Desc
+          description: Publish successful
+  /publish/baseData:
+    post:
+      summary: Publishes raw minute aggregate data
+      responses:
+        "200":
+          description: Publish successful
