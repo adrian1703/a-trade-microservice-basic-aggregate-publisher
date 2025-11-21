@@ -16,7 +16,7 @@ class AggregateDataFilesystemReaderTest {
         val reader = AggregateDataFilesystemReader(dataDirectory)
         val tasks = mutableListOf<Callable<List<StockAggregate>>>()
         while (reader.hasNext()) {
-            tasks.add(reader.getBatchTask())
+            tasks.add(reader.getBatchTaskTransformADay())
         }
         assertEquals(3, tasks.size, "The number of tasks should be 3.")
     }
@@ -25,7 +25,7 @@ class AggregateDataFilesystemReaderTest {
     fun `should produce agg objects`() {
         val reader = AggregateDataFilesystemReader(dataDirectory)
         val tasks = mutableListOf<Callable<List<StockAggregate>>>()
-        tasks.add(reader.getBatchTask())
+        tasks.add(reader.getBatchTaskTransformADay())
         val aggregates = tasks[0].call()
         println(aggregates.size)
         assertTrue(10000 < aggregates.size,  "The number of tasks should be greater than 10k." )

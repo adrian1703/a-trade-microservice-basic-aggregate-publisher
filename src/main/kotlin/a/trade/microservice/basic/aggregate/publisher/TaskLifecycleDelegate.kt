@@ -13,7 +13,7 @@ class TaskLifecycleDelegate(private val runtimeApi: RuntimeApi) : Lifecycle {
     private var isRunning = false
     private var taskFuture: Future<*>? = null
         @Synchronized get
-    private var task: Callable<*>? = null
+    var task: Callable<*>? = null
         @Synchronized set
 
     @Synchronized

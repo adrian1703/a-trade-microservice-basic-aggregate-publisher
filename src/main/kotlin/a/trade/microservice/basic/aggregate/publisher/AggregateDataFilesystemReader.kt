@@ -33,7 +33,7 @@ class AggregateDataFilesystemReader(private val dataDirectory: String) {
     }
 
     @Synchronized
-    fun getBatchTask(): Callable<List<StockAggregate>> {
+    fun getBatchTaskTransformADay(): Callable<List<StockAggregate>> {
         val file = dataFiles.poll()
         assert(file != null)
         return Callable { transformBatch(file) }
