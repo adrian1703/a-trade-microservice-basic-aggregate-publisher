@@ -2,28 +2,30 @@ package a.trade.microservice.basic.aggregate.publisher
 
 import a.trade.microservice.runtime_api.ExecutorContext
 import a.trade.microservice.runtime_api.RuntimeApi
+import a.trade.microservice.runtime_api.Topics.Instances.STOCKAGGREGATE_ALL_1_MINUTE
 import kafka_message.StockAggregate
+import net.jcip.annotations.ThreadSafe
 import org.springframework.context.Lifecycle
 import java.util.concurrent.Callable
+import org.apache.kafka.clients.producer.ProducerRecord
 
+@ThreadSafe
 class BasicDataPublisher private constructor(
     private val runtimeApi: RuntimeApi,
 ) : Lifecycle {
 
-    private val taskLifecycleDelegate = TaskLifecycleDelegate(runtimeApi)
-    private val IOExec get() = runtimeApi.getExecutorService(ExecutorContext.IO)
-    private val ComputeExec get() = runtimeApi.getExecutorService(ExecutorContext.COMPUTE)
-    private val DefaultExec get() = runtimeApi.getExecutorService(ExecutorContext.DEFAULT)
+    private val asyncTaskManager = AsyncTaskManager(runtimeApi)
+    private val ioExec get() = runtimeApi.getExecutorService(ExecutorContext.IO)
     private lateinit var aggregateDataFilesystemReader: AggregateDataFilesystemReader
 
     init {
-        createNewAggredateReader()
+        createNewAggregateReader()
         if (!aggregateDataFilesystemReader.hasNext()) {
             throw IllegalArgumentException("No data found in the specified directory.")
         }
     }
 
-    private fun createNewAggredateReader() {
+    private fun createNewAggregateReader() {
         aggregateDataFilesystemReader = AggregateDataFilesystemReader("data/minute_aggs_v1")
     }
 
@@ -40,42 +42,50 @@ class BasicDataPublisher private constructor(
     }
 
     override fun start() {
-        taskLifecycleDelegate.task = publishAllTask()
-        taskLifecycleDelegate.start()
+        asyncTaskManager.task = publishAllTask()
+        asyncTaskManager.start()
     }
 
     override fun stop() {
-        taskLifecycleDelegate.stop()
+        asyncTaskManager.stop()
     }
 
     override fun isRunning(): Boolean {
-        return taskLifecycleDelegate.isRunning()
+        return asyncTaskManager.isRunning()
     }
 
     private fun publishAllTask(): Callable<*> {
-        return Callable {
-            val readAggregateTasks = getReadAggregateTasks()
+        fun prepareTopic() {
+            runtimeApi.messageApi.deleteTopic(listOf(STOCKAGGREGATE_ALL_1_MINUTE.topicName()))
+            runtimeApi.messageApi.createTopic(listOf(STOCKAGGREGATE_ALL_1_MINUTE.topicName()))
+        }
+
+        fun getReadAggregateTasks(): List<Callable<List<StockAggregate>>> {
+            val result = mutableListOf<Callable<List<StockAggregate>>>()
+            while (aggregateDataFilesystemReader.hasNext()) {
+                result.add(aggregateDataFilesystemReader.getBatchTaskTransformADay())
+            }
+            return result
+        }
+
+        fun publishAggregatesInBatches(readAggregateTasks: List<Callable<List<StockAggregate>>>) {
+            val producer = runtimeApi.messageApi.createAvroProducer<StockAggregate>()
             val batchSize = 20
             for (batch in readAggregateTasks.chunked(batchSize)) {
-                val futures = batch.map { IOExec.submit(it) }
+                val futures = batch.map { ioExec.submit(it) }
                 for (future in futures) {
                     val stockAggregates = future.get()
-                    publishAggregates()
+                    stockAggregates
+                        .map { ProducerRecord(STOCKAGGREGATE_ALL_1_MINUTE.topicName(), it.ticker, it) }
+                        .forEach { producer.send(it) }
                 }
             }
         }
-    }
 
-    private fun getReadAggregateTasks(): MutableList<Callable<List<StockAggregate>>> {
-        val result = mutableListOf<Callable<List<StockAggregate>>>()
-        while (aggregateDataFilesystemReader.hasNext()) {
-            result.add(aggregateDataFilesystemReader.getBatchTaskTransformADay())
+        return Callable {
+            prepareTopic()
+            val readAggregateTasks = getReadAggregateTasks()
+            publishAggregatesInBatches(readAggregateTasks)
         }
-        return result
-    }
-
-
-    private fun publishAggregates() {
-
     }
 }

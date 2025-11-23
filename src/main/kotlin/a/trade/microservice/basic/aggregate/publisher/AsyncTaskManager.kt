@@ -8,8 +8,23 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Future
 import kotlin.coroutines.cancellation.CancellationException
 
+
+
+/**
+ * Manages the execution of an asynchronous task in a thread-safe manner, allowing a task to be started, stopped,
+ * and queried for its running status. The [start] method returns control to the caller immediately while starting
+ * background execution.
+ *
+ * This class is intended to be used as a delegate for asynchronously executing a task and managing its lifecycle.
+ *
+ * @constructor Creates a new instance of AsyncTaskManager.
+ * @param runtimeApi The runtime API used for accessing the executor service.
+ *
+ * Implements:
+ * - [Lifecycle] to provide standardized start/stop lifecycle management.
+ */
 @ThreadSafe
-class TaskLifecycleDelegate(private val runtimeApi: RuntimeApi) : Lifecycle {
+class AsyncTaskManager(private val runtimeApi: RuntimeApi) : Lifecycle {
     private var isRunning = false
     private var taskFuture: Future<*>? = null
         @Synchronized get

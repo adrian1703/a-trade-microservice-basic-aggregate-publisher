@@ -2,6 +2,7 @@ package a.trade.microservice.basic.aggregate.publisher
 
 import a.trade.microservice.runtime_api.RestApiPlugin
 import a.trade.microservice.runtime_api.RuntimeApi
+import kafka_message.StockAggregate
 import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -29,6 +30,7 @@ class RestApiPluginImpl : RestApiPlugin {
     override fun init(runtimeApi: RuntimeApi?) {
         this@RestApiPluginImpl.runtimeApi = runtimeApi!!
         // Smoke Test; eager init
-        BasicDataPublisher.getInstance(runtimeApi)
+        runtimeApi.messageApi.clientSmokeTest()
+        SmokeTest(runtimeApi).run()
     }
 }
