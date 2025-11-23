@@ -1,6 +1,8 @@
 plugins {
     kotlin("jvm") version "2.2.10"
     kotlin("plugin.allopen") version "2.2.10"
+    id("org.springframework.boot") version "3.3.1"
+    id("io.spring.dependency-management") version "1.1.4"
 }
 
 repositories {
@@ -11,10 +13,10 @@ repositories {
 
 dependencies {
     implementation("adrian.kuhn:a-trade-microservice-runtime-api:0.0.1")
-    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
     implementation("net.jcip:jcip-annotations:1.0")
-    implementation("org.springframework:spring-webflux:6.1.14")
+    implementation("org.springframework:spring-webflux")
     implementation("org.apache.avro:avro:1.12.0")
+    implementation("org.apache.kafka:kafka-clients:4.1.0")
 
     // openapi stuff
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
