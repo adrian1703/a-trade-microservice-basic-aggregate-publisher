@@ -1,5 +1,6 @@
 package a.trade.microservice.basic.aggregate.publisher
 
+import a.trade.microservice.runtime_api.AsyncTaskManager
 import a.trade.microservice.runtime_api.ExecutorContext
 import a.trade.microservice.runtime_api.RuntimeApi
 import a.trade.microservice.runtime_api.Topics.Instances.STOCKAGGREGATE_ALL_1_MINUTE
