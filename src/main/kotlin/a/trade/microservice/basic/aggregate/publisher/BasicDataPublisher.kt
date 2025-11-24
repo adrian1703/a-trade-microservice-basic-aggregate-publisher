@@ -56,9 +56,8 @@ class BasicDataPublisher private constructor(
 
     override fun start() {
         logger.info("Starting BasicDataPublisher")
-//        asyncTaskManager.task = publishAllTask()
-//        asyncTaskManager.start()
-        publishAllTask().call()
+        asyncTaskManager.task = publishAllTask()
+        asyncTaskManager.start()
     }
 
     override fun stop() {

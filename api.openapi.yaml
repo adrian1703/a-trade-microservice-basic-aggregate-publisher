@@ -4,7 +4,7 @@ info:
   description: Title
   version: 1.0.0
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:4080
   - url: http://localhost:6001
 paths:
   /ping:
