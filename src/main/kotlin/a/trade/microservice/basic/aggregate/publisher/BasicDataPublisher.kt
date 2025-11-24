@@ -3,7 +3,7 @@ package a.trade.microservice.basic.aggregate.publisher
 import a.trade.microservice.runtime_api.AsyncTaskManager
 import a.trade.microservice.runtime_api.ExecutorContext
 import a.trade.microservice.runtime_api.RuntimeApi
-import a.trade.microservice.runtime_api.Topics.Instances.STOCKAGGREGATE_ALL_1_MINUTE
+import a.trade.microservice.runtime_api.Topics.Instance.STOCKAGGREGATE_ALL_1_MINUTE
 import kafka_message.StockAggregate
 import net.jcip.annotations.ThreadSafe
 import org.springframework.context.Lifecycle
