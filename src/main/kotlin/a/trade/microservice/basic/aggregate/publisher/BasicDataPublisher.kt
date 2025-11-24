@@ -14,11 +14,10 @@ import org.slf4j.LoggerFactory
 
 @ThreadSafe
 class BasicDataPublisher private constructor(
-    private val runtimeApi: RuntimeApi,
-) : Lifecycle {
+     runtimeApi: RuntimeApi,
+     logger: Logger = LoggerFactory.getLogger(BasicDataPublisher::class.java),
+) : Lifecycle, AbstractPublisher(runtimeApi, logger) {
 
-    private val logger: Logger = LoggerFactory.getLogger(BasicDataPublisher::class.java)
-    private val asyncTaskManager = AsyncTaskManager(runtimeApi)
     private val computeExec get() = runtimeApi.getExecutorService(ExecutorContext.COMPUTE)
     private lateinit var aggregateDataFilesystemReader: AggregateDataFilesystemReader
 
@@ -54,20 +53,8 @@ class BasicDataPublisher private constructor(
         private val logger: Logger = LoggerFactory.getLogger(BasicDataPublisher::class.java)
     }
 
-    override fun start() {
-        logger.info("Starting BasicDataPublisher")
-        asyncTaskManager.task = publishAllTask()
-        asyncTaskManager.start()
-    }
-
-    override fun stop() {
-        logger.info("Stopping BasicDataPublisher")
-        asyncTaskManager.stop()
-    }
-
-    override fun isRunning(): Boolean {
-        val running = asyncTaskManager.isRunning()
-        return running
+    override fun taskToRun(): Callable<*> {
+        return publishAllTask()
     }
 
     private fun publishAllTask(): Callable<*> {
