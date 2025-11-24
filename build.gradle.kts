@@ -10,6 +10,8 @@ repositories {
     mavenLocal()
 }
 
+val pluginLibs = listOf("opencsv")
+
 
 dependencies {
     implementation("adrian.kuhn:a-trade-microservice-runtime-api:0.0.1")
@@ -17,7 +19,8 @@ dependencies {
     implementation("org.springframework:spring-webflux")
     implementation("org.apache.avro:avro:1.12.0")
     implementation("org.apache.kafka:kafka-clients:4.1.0")
-
+    // custom
+    implementation("com.opencsv:opencsv:5.9")
     // openapi stuff
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
@@ -27,11 +30,14 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
     // openapi stuff ende
-    implementation("com.opencsv:opencsv:5.9")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+    testImplementation("org.slf4j:slf4j-simple:2.0.13")
+
 }
+
+
 
 group = "adrian.kuhn"
 version = "0.0.1"
@@ -56,4 +62,25 @@ kotlin {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
         javaParameters = true
     }
+}
+
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    enabled = false
+}
+tasks.getByName<Jar>("jar") {
+    enabled = true
+}
+
+tasks.named<Jar>("jar") {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(sourceSets.main.get().output)
+
+    // Only embed selected dependency JARs
+    from({
+             configurations.runtimeClasspath.get()
+                 .filter { jar ->
+                     pluginLibs.any { needle -> jar.name.contains(needle) } && jar.name.endsWith("jar")
+                 }
+                 .map { zipTree(it) }
+         })
 }

@@ -1,5 +1,6 @@
 package a.trade.microservice.basic.aggregate.publisher
 
+import a.trade.microservice.runtime_api.ExecutorContext
 import a.trade.microservice.runtime_api.RestApiPlugin
 import a.trade.microservice.runtime_api.RuntimeApi
 import org.springframework.web.reactive.function.server.RouterFunction
@@ -29,7 +30,7 @@ class RestApiPluginImpl : RestApiPlugin {
     override fun init(runtimeApi: RuntimeApi?) {
         this@RestApiPluginImpl.runtimeApi = runtimeApi!!
         // Smoke Test; eager init
-        runtimeApi.messageApi.clientSmokeTest()
-        SmokeTest(runtimeApi).run()
+//        runtimeApi.messageApi.clientSmokeTest()
+//        SmokeTest(runtimeApi).run()
     }
 }

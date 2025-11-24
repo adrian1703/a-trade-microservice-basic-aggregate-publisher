@@ -20,7 +20,7 @@ class RestApiPluginLoadingTest {
 
     @Test
     fun `should discover RestApiPlugin implementation from JAR file`() {
-        val jarFile = File("build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1.jar")
+        val jarFile = File("build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1-plain.jar")
         require(jarFile.exists()) { "JAR file not found: ${jarFile.absolutePath}" }
         val url = jarFile.toURI().toURL()
 

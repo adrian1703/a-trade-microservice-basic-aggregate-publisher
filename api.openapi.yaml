@@ -5,14 +5,14 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:8080
-  - url: http://localhost:7001
+  - url: http://localhost:6001
 paths:
   /ping:
     get:
       summary: pings
       responses:
         "200":
-          description: Publish successful
+          description: ping
   /publish/baseData:
     post:
       summary: Publishes raw minute aggregate data
