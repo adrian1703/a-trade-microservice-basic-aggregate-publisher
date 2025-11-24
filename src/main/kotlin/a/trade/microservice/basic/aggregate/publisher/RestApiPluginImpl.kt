@@ -29,8 +29,7 @@ class RestApiPluginImpl : RestApiPlugin {
     override fun init(runtimeApi: RuntimeApi?) {
         this@RestApiPluginImpl.runtimeApi = runtimeApi!!
         // Smoke Test; eager init
-        BasicDataPublisher.getInstance(runtimeApi)
-        runtimeApi.messageApi.clientSmokeTest()
         SmokeTest(runtimeApi).run()
+//        runtimeApi.messageApi.clientSmokeTest()
     }
 }

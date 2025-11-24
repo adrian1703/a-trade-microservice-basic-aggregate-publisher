@@ -27,8 +27,6 @@ class AggregateDataFilesystemReader(private val dataDirectory: String) {
         val directory = File(dataDirectory)
         var result = directory.listFiles()?.toMutableList() ?: emptyList()
         result = result.filter { it.name.endsWith(".gz") }.sortedBy { it.name }
-        transformBatch(result[0])
-        println("done")
         return ConcurrentLinkedQueue(result)
     }
 
