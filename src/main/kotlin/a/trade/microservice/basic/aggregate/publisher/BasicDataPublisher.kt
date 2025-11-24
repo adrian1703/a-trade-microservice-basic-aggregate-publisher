@@ -19,7 +19,7 @@ class BasicDataPublisher private constructor(
 
     private val logger: Logger = LoggerFactory.getLogger(BasicDataPublisher::class.java)
     private val asyncTaskManager = AsyncTaskManager(runtimeApi)
-    private val ioExec get() = runtimeApi.getExecutorService(ExecutorContext.IO)
+    private val computeExec get() = runtimeApi.getExecutorService(ExecutorContext.COMPUTE)
     private lateinit var aggregateDataFilesystemReader: AggregateDataFilesystemReader
 
     init {
@@ -96,7 +96,7 @@ class BasicDataPublisher private constructor(
                 logger.info("Publishing aggregates in batches of $batchSize")
                 for (batch in readAggregateTasks.chunked(batchSize)) {
                     logger.info("Submitting batch of size ${batch.size} for execution.")
-                    val futures = batch.map { ioExec.submit(it) }
+                    val futures = batch.map { computeExec.submit(it) }
                     for (future in futures) {
                         val stockAggregates = future.get()
                         totalPublished += stockAggregates.size
