@@ -1,17 +1,15 @@
 package a.trade.microservice.basic.aggregate.publisher
 
-import a.trade.microservice.runtime_api.AsyncTaskManager
 import a.trade.microservice.runtime_api.ExecutorContext
 import a.trade.microservice.runtime_api.RuntimeApi
-import a.trade.microservice.runtime_api.Topics
 import a.trade.microservice.runtime_api.Topics.Instance.STOCKAGGREGATE_ALL_1_MINUTE
 import kafka_message.StockAggregate
 import net.jcip.annotations.ThreadSafe
-import org.springframework.context.Lifecycle
-import java.util.concurrent.Callable
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.context.Lifecycle
+import java.util.concurrent.Callable
 
 @ThreadSafe
 class BasicDataPublisher private constructor(
@@ -60,7 +58,7 @@ class BasicDataPublisher private constructor(
 
     private fun publishAllTask(): Callable<*> {
         fun prepareTopic() {
-            runtimeApi.messageApi.recreateTopic(listOf(STOCKAGGREGATE_ALL_1_MINUTE.topicName(null)))
+            runtimeApi.messageApi.recreateTopic(listOf(STOCKAGGREGATE_ALL_1_MINUTE.rootName()))
         }
 
         fun getReadAggregateTasks(): List<Callable<List<StockAggregate>>> {
@@ -87,7 +85,7 @@ class BasicDataPublisher private constructor(
                         totalPublished += stockAggregates.size
                         logger.info("Publishing results for a total of $totalPublished.")
                         stockAggregates
-                            .map { ProducerRecord(STOCKAGGREGATE_ALL_1_MINUTE.topicName(null), it.ticker, it) }
+                            .map { ProducerRecord(STOCKAGGREGATE_ALL_1_MINUTE.topicNameFor(it.ticker), it.ticker, it) }
                             .forEach { producer.send(it) }
                     }
                 }

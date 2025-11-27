@@ -2,6 +2,7 @@ package a.trade.microservice.basic.aggregate.publisher
 
 import a.trade.microservice.runtime_api.RestApiPlugin
 import a.trade.microservice.runtime_api.RuntimeApi
+import a.trade.microservice.runtime_api.Topics
 import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -15,14 +16,21 @@ class RestApiPluginImpl : RestApiPlugin {
     override fun getRouter(): RouterFunction<ServerResponse> {
         val plugin = this
         return router {
-            POST(
-                "/publish/baseData", plugin::publishBaseData
-            )
+            POST("/publish/baseData", plugin::publishBaseData)
+            POST("/publish/single_5_min", plugin::publishSingle5minData)
         }
     }
 
     private fun publishBaseData(request: ServerRequest): Mono<ServerResponse> {
         BasicDataPublisher.getInstance(runtimeApi).start()
+        return ServerResponse.ok().build()
+    }
+
+    private fun publishSingle5minData(request: ServerRequest): Mono<ServerResponse> {
+        DerivedDataPublisher.getInstance(runtimeApi,
+                                         Topics.Instance.STOCKAGGREGATE_ALL_1_MINUTE,
+                                         Topics.Instance.STOCKAGGREGATE_SINGLE_1_MINUTE,
+                                         ).start()
         return ServerResponse.ok().build()
     }
 

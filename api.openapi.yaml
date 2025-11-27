@@ -18,4 +18,9 @@ paths:
       summary: Publishes raw minute aggregate data
       responses:
         "200":
-          description: Publish successful
+          description: Publish started
+  /publish/single_5_min:
+    post:
+      responses:
+        "200":
+          description: Publish started
