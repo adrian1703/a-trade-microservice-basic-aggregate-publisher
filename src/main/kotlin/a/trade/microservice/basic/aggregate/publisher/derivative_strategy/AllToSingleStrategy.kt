@@ -35,7 +35,7 @@ class AllToSingleStrategy(private val runtimeApi: RuntimeApi) {
         val futures = mutableListOf<Future<*>>()
         buffers = ConcurrentHashMap<String, BlockingQueue<*>>()
 
-        val input = ReadTopic(runtimeApi, inOut.first, pollDurationMillis = 2000)
+        val input = ReadTopic(runtimeApi, inOut.first, "all-to-single-5-min-reader", pollDurationMillis = 2000)
         val inputTickerStrickOrderFilterBuffer = createBuffer<StockAggregate>("Input-OrderFilter")
         val orderFilter = StrictOrderFilter()
         val orderfilternRecordmapperBuffer = createBuffer<StockAggregate>("OrderFilter-Recordmapper")
@@ -65,9 +65,6 @@ class AllToSingleStrategy(private val runtimeApi: RuntimeApi) {
     ): Runnable {
         fun printBufferStatus() {
             logger.info("[Monitor] #########################################")
-            val executor = exec as ThreadPoolExecutor
-            logger.info("[Monitor] Active threads: ${executor.activeCount}, corePoolSize: ${executor.corePoolSize}")
-            logger.info("[Monitor] Completed tasks: ${executor.completedTaskCount}, taskCount: ${executor.taskCount}")
             buffers.entries.forEach { (name, buffer) ->
                 logger.info("[Monitor] Buffer status: $name(size=${buffer.size})")
             }
