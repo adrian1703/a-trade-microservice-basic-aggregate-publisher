@@ -23,13 +23,13 @@ class WriteTopic(
         runtimeApi.messageApi.createAvroProducer<StockAggregate>().use { producer ->
             while (true) {
                 val record = buffer.take()
-                if (recreateTopic && !seenTopics.contains(record.topic())) {
-                    runtimeApi.messageApi.recreateTopic(listOf(record.topic()))
-                    seenTopics.add(record.topic())
-                }
                 if (record.value() is StopCase) {
                     logger.info("StopCase received, exiting.")
                     break
+                }
+                if (recreateTopic && !seenTopics.contains(record.topic())) {
+                    runtimeApi.messageApi.recreateTopic(listOf(record.topic()))
+                    seenTopics.add(record.topic())
                 }
                 producer.send(record)
             }
