@@ -3,6 +3,7 @@ package a.trade.microservice.basic.aggregate.publisher
 import a.trade.microservice.runtime_api.AsyncTaskManager
 import a.trade.microservice.runtime_api.ExecutorContext
 import a.trade.microservice.runtime_api.RuntimeApi
+import a.trade.microservice.runtime_api.Topics
 import a.trade.microservice.runtime_api.Topics.Instance.STOCKAGGREGATE_ALL_1_MINUTE
 import kafka_message.StockAggregate
 import net.jcip.annotations.ThreadSafe
@@ -59,10 +60,7 @@ class BasicDataPublisher private constructor(
 
     private fun publishAllTask(): Callable<*> {
         fun prepareTopic() {
-            logger.info("Preparing topic: ${STOCKAGGREGATE_ALL_1_MINUTE.topicName()}")
-            runtimeApi.messageApi.deleteTopic(listOf(STOCKAGGREGATE_ALL_1_MINUTE.topicName()))
-            runtimeApi.messageApi.createTopic(listOf(STOCKAGGREGATE_ALL_1_MINUTE.topicName()))
-            logger.info("Topic prepared: ${STOCKAGGREGATE_ALL_1_MINUTE.topicName()}")
+            runtimeApi.messageApi.recreateTopic(listOf(STOCKAGGREGATE_ALL_1_MINUTE.topicName(null)))
         }
 
         fun getReadAggregateTasks(): List<Callable<List<StockAggregate>>> {
@@ -89,7 +87,7 @@ class BasicDataPublisher private constructor(
                         totalPublished += stockAggregates.size
                         logger.info("Publishing results for a total of $totalPublished.")
                         stockAggregates
-                            .map { ProducerRecord(STOCKAGGREGATE_ALL_1_MINUTE.topicName(), it.ticker, it) }
+                            .map { ProducerRecord(STOCKAGGREGATE_ALL_1_MINUTE.topicName(null), it.ticker, it) }
                             .forEach { producer.send(it) }
                     }
                 }
