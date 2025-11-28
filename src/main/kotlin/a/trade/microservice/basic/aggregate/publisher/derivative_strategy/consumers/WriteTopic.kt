@@ -1,7 +1,7 @@
 package a.trade.microservice.basic.aggregate.publisher.derivative_strategy.consumers
 
 import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.consumers.Consumer
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.StopCase
+import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.specialcase.StopCase
 import a.trade.microservice.runtime_api.RuntimeApi
 import kafka_message.StockAggregate
 import org.apache.kafka.clients.producer.ProducerRecord

@@ -1,6 +1,6 @@
 package a.trade.microservice.basic.aggregate.publisher.derivative_strategy.producers
 
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.StopCase
+import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.specialcase.StopCase
 import a.trade.microservice.runtime_api.RuntimeApi
 import a.trade.microservice.runtime_api.Topics
 import kafka_message.StockAggregate

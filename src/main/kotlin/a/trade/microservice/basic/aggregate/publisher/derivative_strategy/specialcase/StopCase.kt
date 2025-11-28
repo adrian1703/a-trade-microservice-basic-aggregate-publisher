@@ -1,4 +1,4 @@
-package a.trade.microservice.basic.aggregate.publisher.derivative_strategy
+package a.trade.microservice.basic.aggregate.publisher.derivative_strategy.specialcase
 
 import kafka_message.StockAggregate
 
