@@ -1,27 +1,18 @@
 package a.trade.microservice.basic.aggregate.publisher.derivative_strategy
 
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.consumers.WriteTopic
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.producers.ReadTopic
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.transformers.ProducerRecordMapper
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.transformers.StrictOrderFilter
 import a.trade.microservice.runtime_api.ExecutorContext
 import a.trade.microservice.runtime_api.RuntimeApi
 import a.trade.microservice.runtime_api.Topics
-import kafka_message.StockAggregate
-import org.apache.kafka.clients.producer.ProducerRecord
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.concurrent.BlockingQueue
-import java.util.concurrent.Callable
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Future
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.*
 
-abstract class DerivativStrategy(private val runtimeApi: RuntimeApi){
+abstract class DerivativStrategy(
+    private val runtimeApi: RuntimeApi,
+    val inputTopic: Topics.Instance,
+    val outputTopic: Topics.Instance,
+) {
 
-    private val inOut = Pair(Topics.Instance.STOCKAGGREGATE_ALL_1_MINUTE, Topics.Instance.STOCKAGGREGATE_SINGLE_1_MINUTE)
     private val exec: ExecutorService get() = runtimeApi.getExecutorService(ExecutorContext.UNBOUNDED)
     private val buffers = ConcurrentHashMap<String, BlockingQueue<*>>()
     private val futures = mutableListOf<Future<*>>()
@@ -33,7 +24,7 @@ abstract class DerivativStrategy(private val runtimeApi: RuntimeApi){
     }
 
     fun execute() {
-        val tasks = configureTasks(inOut.first, inOut.second)
+        val tasks = configureTasks(inputTopic, outputTopic)
         tasks.forEach { futures.add(exec.submit(it)) }
         val monitorTask = createMonitorTask(
             buffers,
