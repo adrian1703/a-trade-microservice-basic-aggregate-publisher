@@ -12,14 +12,14 @@ import java.util.concurrent.BlockingQueue
 class ReadTopic(
     private val runtimeApi: RuntimeApi,
     private val topic: Topics.Instance,
-    private val groupName: String,
+    private val groupName: String = UUID.randomUUID().toString(),
     private val tickerName: String? = null,
     val pollDurationMillis: Long = 1000,
 ) : Producer<StockAggregate> {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun pushInto(buffer: BlockingQueue<StockAggregate>) {
-        runtimeApi.messageApi.createAvroConsumer<StockAggregate>(UUID.randomUUID().toString()).use { consumer ->
+        runtimeApi.messageApi.createAvroConsumer<StockAggregate>(groupName).use { consumer ->
             var i = 0
             consumer.subscribe(listOf(topic.topicNameFor(tickerName)))
             while (true) {
@@ -27,15 +27,16 @@ class ReadTopic(
                 if (records.isEmpty) {
                     logger.info("No records polled in this interval.")
                 }
-                records.forEach { buffer.put(it.value())}
+                records.forEach { buffer.put(it.value()) }
                 if (i == 0) consumer.commitSync()
                 if (runtimeApi.messageApi.lastRecordReached(consumer)) {
                     logger.info("Last record reached on topic: $topic, sending StopCase.")
                     buffer.put(StopCase())
                     break
                 }
-                i = (i+1 % 1000)
+                i = (i + 1 % 1000)
             }
         }
+        runtimeApi.messageApi.deleteConsumerGroups(listOf(groupName))
     }
 }
