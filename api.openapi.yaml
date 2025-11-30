@@ -19,7 +19,12 @@ paths:
       responses:
         "200":
           description: Publish started
-  /publish/single_5_min:
+  /publish/single_1_min:
+    post:
+      responses:
+        "200":
+          description: Publish started
+  /publish/all_1_day:
     post:
       responses:
         "200":

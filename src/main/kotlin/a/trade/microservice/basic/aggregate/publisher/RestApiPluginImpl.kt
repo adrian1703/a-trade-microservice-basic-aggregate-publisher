@@ -17,7 +17,8 @@ class RestApiPluginImpl : RestApiPlugin {
         val plugin = this
         return router {
             POST("/publish/baseData", plugin::publishBaseData)
-            POST("/publish/single_5_min", plugin::publishSingle5minData)
+            POST("/publish/single_1_min", plugin::publishSingle5minData)
+            POST("/publish/all_1_day", plugin::publishAll1DayData)
         }
     }
 
@@ -27,10 +28,20 @@ class RestApiPluginImpl : RestApiPlugin {
     }
 
     private fun publishSingle5minData(request: ServerRequest): Mono<ServerResponse> {
-        DerivedDataPublisher.getInstance(runtimeApi,
-                                         Topics.Instance.STOCKAGGREGATE_ALL_1_MINUTE,
-                                         Topics.Instance.STOCKAGGREGATE_SINGLE_1_MINUTE,
-                                         ).start()
+        DerivedDataPublisher.getInstance(
+            runtimeApi,
+            Topics.Instance.STOCKAGGREGATE_ALL_1_MINUTE,
+            Topics.Instance.STOCKAGGREGATE_SINGLE_1_MINUTE,
+        ).start()
+        return ServerResponse.ok().build()
+    }
+
+    private fun publishAll1DayData(request: ServerRequest): Mono<ServerResponse> {
+        DerivedDataPublisher.getInstance(
+            runtimeApi,
+            Topics.Instance.STOCKAGGREGATE_ALL_1_MINUTE,
+            Topics.Instance.STOCKAGGREGATE_ALL_1_DAY,
+        ).start()
         return ServerResponse.ok().build()
     }
 

@@ -13,8 +13,8 @@ import java.util.concurrent.Callable
 
 @ThreadSafe
 class BasicDataPublisher private constructor(
-     runtimeApi: RuntimeApi,
-     logger: Logger = LoggerFactory.getLogger(BasicDataPublisher::class.java),
+    runtimeApi: RuntimeApi,
+    logger: Logger = LoggerFactory.getLogger(BasicDataPublisher::class.java),
 ) : Lifecycle, AbstractPublisher(runtimeApi, logger) {
 
     private val computeExec get() = runtimeApi.getExecutorService(ExecutorContext.COMPUTE)
@@ -74,7 +74,7 @@ class BasicDataPublisher private constructor(
 
         fun publishAggregatesInBatches(readAggregateTasks: List<Callable<List<StockAggregate>>>) {
             runtimeApi.messageApi.createAvroProducer<StockAggregate>().use { producer ->
-                val batchSize = 20
+                val batchSize = 3
                 var totalPublished = 0
                 logger.info("Publishing aggregates in batches of $batchSize")
                 for (batch in readAggregateTasks.chunked(batchSize)) {

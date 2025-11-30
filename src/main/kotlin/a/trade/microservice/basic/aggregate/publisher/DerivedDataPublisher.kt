@@ -2,6 +2,7 @@ package a.trade.microservice.basic.aggregate.publisher
 
 import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.AllToSingleStrategy
 import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.DerivativStrategy
+import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.WindowAggregationStrategy
 import a.trade.microservice.runtime_api.RuntimeApi
 import a.trade.microservice.runtime_api.Topics
 import org.slf4j.Logger
@@ -39,6 +40,8 @@ class DerivedDataPublisher private constructor(
         ): DerivativStrategy {
             if (inputTopic.aggregateKind == Topics.AggregateKind.ALL && outputTopic.aggregateKind == Topics.AggregateKind.SINGLE) {
                 return AllToSingleStrategy(runtimeApi, inputTopic, outputTopic)
+            } else if (inputTopic.durationInMillis < outputTopic.durationInMillis) {
+                return WindowAggregationStrategy(runtimeApi, inputTopic, outputTopic)
             }
             throw IllegalArgumentException("Unsupported combination of input and output topics: $inputTopic, $outputTopic")
         }

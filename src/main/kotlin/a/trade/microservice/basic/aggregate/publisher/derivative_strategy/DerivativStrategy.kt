@@ -18,7 +18,7 @@ abstract class DerivativStrategy(
     private val futures = mutableListOf<Future<*>>()
 
     protected fun <T> createBuffer(name: String): LinkedBlockingQueue<T> {
-        val result = LinkedBlockingQueue<T>(5000)
+        val result = LinkedBlockingQueue<T>(1000)
         buffers.put(name, result)
         return result
     }
