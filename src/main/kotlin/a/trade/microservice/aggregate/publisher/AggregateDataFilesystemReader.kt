@@ -1,4 +1,4 @@
-package a.trade.microservice.basic.aggregate.publisher
+package a.trade.microservice.aggregate.publisher
 
 import com.opencsv.CSVReader
 import kafka_message.StockAggregate

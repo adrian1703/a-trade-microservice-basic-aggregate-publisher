@@ -13,14 +13,14 @@ class RestApiPluginLoadingTest {
 //        val implementations = loader.toList()
 //        println(implementations.size)
 //        assertTrue(
-//            implementations.any { it::class.java.name == "a.trade.microservice.basic.aggregate.publisher.RestApiPluginImpl" },
+//            implementations.any { it::class.java.name == "a.trade.microservice.aggregate.publisher.RestApiPluginImpl" },
 //            "RestApiPluginImplementation must be discoverable via ServiceLoader"
 //        )
 //    }
 //
 //    @Test
 //    fun `should discover RestApiPlugin implementation from JAR file`() {
-//        val jarFile = File("build/libs/a-trade-microservice-basic-aggregate-publisher-0.0.1-plain.jar")
+//        val jarFile = File("build/libs/a.trade.microservice.aggregate-publisher-0.0.1-plain.jar")
 //        require(jarFile.exists()) { "JAR file not found: ${jarFile.absolutePath}" }
 //        val url = jarFile.toURI().toURL()
 //
@@ -33,7 +33,7 @@ class RestApiPluginLoadingTest {
 //            )
 //            val implementations = serviceLoader.toList()
 //            assertTrue(
-//                implementations.any { it::class.java.name == "a.trade.microservice.basic.aggregate.publisher.RestApiPluginImpl" },
+//                implementations.any { it::class.java.name == "a.trade.microservice.aggregate.publisher.RestApiPluginImpl" },
 //                "RestApiPluginImplementation must be discoverable via ServiceLoader from JAR"
 //            )
 //        }

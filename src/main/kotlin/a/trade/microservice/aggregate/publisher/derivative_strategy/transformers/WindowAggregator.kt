@@ -1,6 +1,6 @@
-package a.trade.microservice.basic.aggregate.publisher.derivative_strategy.transformers
+package a.trade.microservice.aggregate.publisher.derivative_strategy.transformers
 
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.specialcase.StopCase
+import a.trade.microservice.aggregate.publisher.derivative_strategy.specialcase.StopCase
 import a.trade.microservice.runtime_api.Topics
 import kafka_message.StockAggregate
 import org.slf4j.LoggerFactory

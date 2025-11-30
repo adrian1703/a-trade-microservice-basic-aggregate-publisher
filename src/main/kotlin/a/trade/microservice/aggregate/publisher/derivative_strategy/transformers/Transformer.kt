@@ -1,4 +1,4 @@
-package a.trade.microservice.basic.aggregate.publisher.derivative_strategy.transformers
+package a.trade.microservice.aggregate.publisher.derivative_strategy.transformers
 
 import java.util.concurrent.BlockingQueue
 

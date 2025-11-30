@@ -1,4 +1,4 @@
-package a.trade.microservice.basic.aggregate.publisher
+package a.trade.microservice.aggregate.publisher
 
 import a.trade.microservice.runtime_api.RestApiPlugin
 import a.trade.microservice.runtime_api.RuntimeApi

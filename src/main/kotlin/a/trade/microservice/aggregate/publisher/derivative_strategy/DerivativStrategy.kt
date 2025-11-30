@@ -1,8 +1,8 @@
-package a.trade.microservice.basic.aggregate.publisher.derivative_strategy
+package a.trade.microservice.aggregate.publisher.derivative_strategy
 
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.consumers.WriteTopic
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.producers.ReadTopic
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.transformers.ProducerRecordMapper
+import a.trade.microservice.aggregate.publisher.derivative_strategy.consumers.WriteTopic
+import a.trade.microservice.aggregate.publisher.derivative_strategy.producers.ReadTopic
+import a.trade.microservice.aggregate.publisher.derivative_strategy.transformers.ProducerRecordMapper
 import a.trade.microservice.runtime_api.ExecutorContext
 import a.trade.microservice.runtime_api.RuntimeApi
 import a.trade.microservice.runtime_api.Topics

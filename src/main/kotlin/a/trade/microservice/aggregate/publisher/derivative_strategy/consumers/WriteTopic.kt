@@ -1,7 +1,6 @@
-package a.trade.microservice.basic.aggregate.publisher.derivative_strategy.consumers
+package a.trade.microservice.aggregate.publisher.derivative_strategy.consumers
 
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.consumers.Consumer
-import a.trade.microservice.basic.aggregate.publisher.derivative_strategy.specialcase.StopCase
+import a.trade.microservice.aggregate.publisher.derivative_strategy.specialcase.StopCase
 import a.trade.microservice.runtime_api.RuntimeApi
 import kafka_message.StockAggregate
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -15,7 +14,7 @@ class WriteTopic(
     private val runtimeApi: RuntimeApi,
     private val recreateTopic: Boolean = true,
     private val seenTopics: HashSet<String> = HashSet(),
-): Consumer<ProducerRecord<String, StockAggregate>> {
+) : Consumer<ProducerRecord<String, StockAggregate>> {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun consumeFrom(buffer: BlockingQueue<ProducerRecord<String, StockAggregate>>) {

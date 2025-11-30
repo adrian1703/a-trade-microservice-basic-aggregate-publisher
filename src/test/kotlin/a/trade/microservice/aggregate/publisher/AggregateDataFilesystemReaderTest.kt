@@ -1,5 +1,4 @@
-package a.trade.microservice.basic.aggregate.publisher
-
+package a.trade.microservice.aggregate.publisher
 
 import kafka_message.StockAggregate
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -28,6 +27,6 @@ class AggregateDataFilesystemReaderTest {
         tasks.add(reader.getBatchTaskTransformADay())
         val aggregates = tasks[0].call()
         println(aggregates.size)
-        assertTrue(10000 < aggregates.size,  "The number of tasks should be greater than 10k." )
+        assertTrue(10000 < aggregates.size, "The number of tasks should be greater than 10k.")
     }
 }
