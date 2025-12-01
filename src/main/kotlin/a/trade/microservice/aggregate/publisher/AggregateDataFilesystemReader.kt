@@ -57,13 +57,13 @@ class AggregateDataFilesystemReader(private val dataDirectory: String) {
             var row: Array<String>? = reader.readNext()
             while (row != null) {
                 try {
-                    val agg = StockAggregate(row[0],                   // ticker
-                                             row[6].toLong(),          // window_start
-                                             row[2].toDouble(),        // open
-                                             row[4].toDouble(),        // high
-                                             row[5].toDouble(),        // low
-                                             row[3].toDouble(),        // close
-                                             row[1].toLong()           // volume
+                    val agg = StockAggregate(row[0],                    // ticker
+                                             row[6].toLong() / 1000000, // window_start + nano to millis
+                                             row[2].toDouble(),         // open
+                                             row[4].toDouble(),         // high
+                                             row[5].toDouble(),         // low
+                                             row[3].toDouble(),         // close
+                                             row[1].toLong()            // volume
                     )
                     aggregates.add(agg)
                     row = reader.readNext()
