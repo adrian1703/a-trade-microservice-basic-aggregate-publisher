@@ -33,14 +33,14 @@ class WindowAggregator(
      */
 
     private val lastWindowedAggregateForTicker = HashMap<String, Pair<Long, MutableList<StockAggregate>>>()
+    private val targetDuration = outputTopics.durationInMillis
 
     init {
         if (inputTopic.durationInMillis > outputTopics.durationInMillis) throw IllegalArgumentException("Input topic duration (${inputTopic.durationInMillis}) must be smaller or equal to output topic duration (${outputTopics.durationInMillis})")
     }
 
     override fun transform(input: BlockingQueue<StockAggregate>, output: BlockingQueue<StockAggregate>) {
-        logger.info("Starting WindowAggregator")
-        val targetDuration = outputTopics.durationInMillis
+        logger.info("WindowAggregator: targetDuration=${targetDuration} ms")
         while (true) {
             val stockAggregate = input.take()
             val currentTicker = stockAggregate.ticker
@@ -54,19 +54,23 @@ class WindowAggregator(
             }
             // case 1: ticker in not yet present
             if (!lastWindowedAggregateForTicker.containsKey(currentTicker)) {
+                logger.debug("Ticker $currentTicker not yet present in lastWindowedAggregateForTicker, initializing.")
                 initializeTickerFor(stockAggregate)
-                break
+                continue
             }
             // case 2: ticker is present and within target duration
             val lastWindow = lastWindowedAggregateForTicker[stockAggregate.ticker]!!.first
-            if (currentWindow + targetDuration > lastWindow) {
+            if (targetDuration + lastWindow > currentWindow) {
+                logger.debug("Ticker $currentTicker present in lastWindowedAggregateForTicker, but within target duration.")
                 lastWindowedAggregateForTicker[stockAggregate.ticker]!!.second.add(stockAggregate)
-                break
+                continue
             }
             // case 3: ticker is present and is over target duration
+            logger.debug("Ticker $currentTicker present in lastWindowedAggregateForTicker, but outside target duration - publishing.")
             publishTickerAggregateFor(currentTicker, output)
             initializeTickerFor(stockAggregate)
         }
+        logger.info("WindowAggregator finished.")
     }
 
     private fun initializeTickerFor(stockAggregate: StockAggregate) {

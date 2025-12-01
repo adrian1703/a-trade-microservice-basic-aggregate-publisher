@@ -8,7 +8,6 @@ import a.trade.microservice.runtime_api.RuntimeApi
 import a.trade.microservice.runtime_api.Topics
 import kafka_message.StockAggregate
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.*
 
@@ -18,13 +17,13 @@ abstract class DerivativStrategy(
     val outputTopic: Topics.Instance,
 ) {
 
-    private val exec: ExecutorService get() = runtimeApi.getExecutorService(ExecutorContext.UNBOUNDED)
+    private val exec: ExecutorService get() = runtimeApi.getExecutorService(ExecutorContext.COMPUTE)
     private val buffers = ConcurrentHashMap<String, BlockingQueue<*>>()
     private val futures = mutableListOf<Future<*>>()
     private val tasks = mutableListOf<Callable<*>>()
 
-    protected fun <T> createBuffer(name: String): LinkedBlockingQueue<T> {
-        val result = LinkedBlockingQueue<T>(1000)
+    protected fun <T> createBuffer(name: String, length: Int = 100): LinkedBlockingQueue<T> {
+        val result = LinkedBlockingQueue<T>(length)
         buffers.put(name, result)
         return result
     }
@@ -35,9 +34,9 @@ abstract class DerivativStrategy(
         val monitorTask = createMonitorTask(
             buffers,
             futures,
-            LoggerFactory.getLogger(this::class.java),
         )
-        exec.submit { monitorTask }
+//        exec.submit { monitorTask }
+        monitorTask.run()
     }
 
     /**
@@ -95,9 +94,9 @@ abstract class DerivativStrategy(
     private fun createMonitorTask(
         buffers: Map<String, BlockingQueue<*>>,
         futures: List<Future<*>>,
-        logger: Logger,
         intervalMillis: Long = 5000,
     ): Runnable {
+        val logger = LoggerFactory.getLogger("MonitorTask-$intervalMillis")
         fun printBufferStatus() {
             logger.info("[Monitor] #########################################")
             buffers.entries.forEach { (name, buffer) ->
@@ -125,11 +124,13 @@ abstract class DerivativStrategy(
 
         val monitorTask = Runnable {
             try {
+                val start = System.currentTimeMillis()
                 while (true) {
                     printBufferStatus()
                     if (checkFutureFailures()) return@Runnable
                     if (futures.all { it.isDone }) {
-                        logger.info("[Monitor] All threads have finished! Exiting monitor.")
+                        val end = System.currentTimeMillis()
+                        logger.info("[Monitor] All threads have finished! Exiting monitor. Total time: ${(end - start) / 1000}s.")
                         return@Runnable
                     }
                     Thread.sleep(intervalMillis)
@@ -138,6 +139,7 @@ abstract class DerivativStrategy(
                 Thread.currentThread().interrupt()
                 logger.warn("[Monitor] Monitor interrupted, exiting.")
             }
+
         }
         return monitorTask
     }

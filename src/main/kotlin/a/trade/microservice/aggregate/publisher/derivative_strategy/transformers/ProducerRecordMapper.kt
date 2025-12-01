@@ -26,5 +26,6 @@ class ProducerRecordMapper(private val topic: Topics.Instance) :
                 break
             }
         }
+        logger.info("ProducerRecordMapper finished.")
     }
 }

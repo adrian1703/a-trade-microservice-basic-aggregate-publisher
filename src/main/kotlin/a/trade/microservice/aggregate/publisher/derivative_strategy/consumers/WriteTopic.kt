@@ -33,5 +33,6 @@ class WriteTopic(
                 producer.send(record)
             }
         }
+        logger.info("WriteTopic finished.")
     }
 }

@@ -26,5 +26,6 @@ class StrictOrderFilter : Transformer<StockAggregate, StockAggregate> {
                 continue // drop unordered
             }
         }
+        logger.info("StrictOrderFilter finished.")
     }
 }
